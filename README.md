@@ -156,6 +156,8 @@ Open: `http://localhost:3000`
 Seeded users:
 - `owner@example.com` / `password123`
 - `member@example.com` / `password123`
+- `superadmin@reply-zen.com` / `password123`
+- `premium@reply-zen.com` / `password123`
 
 ---
 
