@@ -2,15 +2,14 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ReplyZen | AI Review Reply Manager',
-  description: 'Multi-tenant SaaS for AI-generated customer review replies with approvals, analytics, and billing.',
-  metadataBase: new URL('https://reply-zen.com')
+  title: 'Casa Nicolae - Hub Intern',
+  description: 'Aplicatie interna pentru gestionarea medicamentelor si profilurilor psihosociale',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
+    <html lang="ro">
+      <body className="antialiased min-h-screen bg-slate-50">{children}</body>
     </html>
   );
 }
