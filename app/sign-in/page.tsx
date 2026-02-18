@@ -47,7 +47,7 @@ export default function SignInPage({
             <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
               <p className="font-semibold">Demo premium access included</p>
               <p className="mt-1 text-xs text-blue-700 dark:text-blue-200">
-                Use the quick sign-in buttons on the right to load Super Admin and Premium demo credentials.
+                Use the quick sign-in buttons on the right to load demo credentials instantly.
               </p>
             </div>
             {authError ? (

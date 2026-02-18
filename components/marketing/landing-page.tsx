@@ -210,7 +210,7 @@ export function LandingPageView() {
             <div>
               <h2 className="text-3xl font-semibold">Try the live demo accounts now</h2>
               <p className="landing-muted mt-2 text-base leading-7">
-                Open the sign-in page and use the quick login buttons for Super Admin or Premium Owner.
+                Open the sign-in page and use the quick login buttons for instant demo access.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
