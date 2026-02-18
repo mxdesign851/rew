@@ -5,18 +5,18 @@ import { SignInForm } from '@/components/auth/sign-in-form';
 function mapAuthError(error?: string) {
   if (!error) return null;
   const readable: Record<string, string> = {
-    CredentialsSignin: 'Date de autentificare invalide. Verifica email-ul si parola.',
-    AccessDenied: 'Acces refuzat. Contacteaza administratorul.',
-    OAuthSignin: 'Eroare OAuth la autentificare. Incearca din nou.',
-    OAuthCallback: 'Eroare callback OAuth. Incearca din nou.',
-    OAuthCreateAccount: 'Nu s-a putut crea contul OAuth.',
-    EmailCreateAccount: 'Nu s-a putut crea contul pe email.',
-    Callback: 'Autentificarea nu a putut fi finalizata.',
-    OAuthAccountNotLinked: 'Contul OAuth nu este asociat cu acest email.',
-    SessionRequired: 'Sesiune expirata. Te rugam sa te autentifici din nou.',
-    Configuration: 'Configuratie autentificare incompleta. Verifica variabilele NEXTAUTH.'
+    CredentialsSignin: 'Invalid login credentials. Check your email and password.',
+    AccessDenied: 'Access denied. Contact your administrator.',
+    OAuthSignin: 'OAuth sign-in failed. Please try again.',
+    OAuthCallback: 'OAuth callback failed. Please try again.',
+    OAuthCreateAccount: 'Unable to create your OAuth account.',
+    EmailCreateAccount: 'Unable to create your email account.',
+    Callback: 'Authentication could not be completed.',
+    OAuthAccountNotLinked: 'This OAuth account is not linked to your email.',
+    SessionRequired: 'Your session has expired. Please sign in again.',
+    Configuration: 'Authentication configuration is incomplete. Check NEXTAUTH variables.'
   };
-  return readable[error] ?? 'A aparut o eroare la autentificare.';
+  return readable[error] ?? 'An authentication error occurred.';
 }
 
 export default function SignInPage({
