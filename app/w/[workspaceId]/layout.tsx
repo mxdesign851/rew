@@ -48,6 +48,12 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps)
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/casa-nicolae"
+              className="rounded-lg px-2 py-1.5 text-xs text-slate-400 hover:bg-slate-800 hover:text-emerald-400"
+            >
+              Casa Nicolae
+            </Link>
             <WorkspaceSwitcher
               currentWorkspaceId={params.workspaceId}
               items={memberships.map((item) => ({

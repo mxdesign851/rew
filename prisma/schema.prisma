@@ -276,3 +276,130 @@ model SourceConnection {
 
   @@index([workspaceId, provider])
 }
+
+// ========== CASA NICOLAE - Aplicație internă ==========
+
+enum MedicationCategoryType {
+  CARDIO
+  DIABET
+  GASTRO
+  RESPIRATOR
+  NEURO
+  PSIHIATRIC
+  ANTIBIOTICE
+  DURERE
+  ALERGII
+  DERMATO
+  VITAMINE
+  ALTELE
+}
+
+enum HousingStatus {
+  FARA_ADAPOST
+  CENTRU
+  FAMILIE
+}
+
+enum CommunicationLevel {
+  MIC
+  MEDIU
+  BUN
+}
+
+enum StressReaction {
+  CALM
+  AGITAT
+  CRIZE
+}
+
+enum RelationStyle {
+  RETRAS
+  SOCIABIL
+  AGRESIV
+}
+
+enum AutonomyLevel {
+  DEPENDENT
+  PARTIAL
+  INDEPENDENT
+}
+
+enum SleepQuality {
+  BUN
+  SLAB
+}
+
+enum AppetiteLevel {
+  NORMAL
+  SCAZUT
+}
+
+model MedicationCategory {
+  id       String   @id @default(cuid())
+  type     MedicationCategoryType @unique
+  name     String
+  medications Medication[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medication {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  quantity    Int      @default(0)
+  minQuantity Int      @default(5)
+  unit        String   @default("buc")
+  notes       String?
+  category    MedicationCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categoryId])
+}
+
+model Beneficiary {
+  id                    String   @id @default(cuid())
+  firstName             String
+  age                   Int
+  sex                   String
+  location              String
+  evaluationDate        DateTime
+  responsiblePerson     String
+  hasFamily             String   // da / nu / parțial
+  housingStatus         HousingStatus
+  familyContactFreq     String?
+  institutionalHistory  String?
+  knownIllnesses        String?  @db.Text
+  medication            String?  @db.Text
+  disabilities          String?  @db.Text
+  hasPsychologicalEval  Boolean  @default(false)
+  communicationLevel    CommunicationLevel
+  stressReaction        StressReaction
+  relationStyle         RelationStyle
+  autonomyLevel         AutonomyLevel
+  sleepQuality          SleepQuality
+  appetiteLevel         AppetiteLevel
+  sadnessFrequent       Boolean  @default(false)
+  anxiety               Boolean  @default(false)
+  anger                 Boolean  @default(false)
+  apathy                Boolean  @default(false)
+  hopeMotivation        Boolean  @default(false)
+  photoUrl              String?
+  observations          String?  @db.Text
+  aiProfile             String?  @db.Text
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([evaluationDate])
+}
+
+model MedicationNotification {
+  id          String   @id @default(cuid())
+  message     String   @db.Text
+  medicationId String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([isRead])
+}

@@ -1,4 +1,12 @@
-import { Plan, PrismaClient, ReviewSource, Role, Sentiment, Tone } from '@prisma/client';
+import {
+  Plan,
+  PrismaClient,
+  ReviewSource,
+  Role,
+  Sentiment,
+  Tone,
+  MedicationCategoryType
+} from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -692,6 +700,29 @@ async function main() {
       }
     })
   ]);
+
+  // Casa Nicolae - categorii medicamente
+  const casaCategories: { type: MedicationCategoryType; name: string }[] = [
+    { type: 'CARDIO', name: 'Cardio' },
+    { type: 'DIABET', name: 'Diabet' },
+    { type: 'GASTRO', name: 'Gastro' },
+    { type: 'RESPIRATOR', name: 'Respirator' },
+    { type: 'NEURO', name: 'Neuro' },
+    { type: 'PSIHIATRIC', name: 'Psihiatric' },
+    { type: 'ANTIBIOTICE', name: 'Antibiotice' },
+    { type: 'DURERE', name: 'Durere' },
+    { type: 'ALERGII', name: 'Alergii' },
+    { type: 'DERMATO', name: 'Dermato' },
+    { type: 'VITAMINE', name: 'Vitamine' },
+    { type: 'ALTELE', name: 'Altele' }
+  ];
+  for (const cat of casaCategories) {
+    await prisma.medicationCategory.upsert({
+      where: { type: cat.type },
+      update: { name: cat.name },
+      create: { type: cat.type, name: cat.name }
+    });
+  }
 
   console.log('[seed] Demo data upsert complete.');
   console.log('[seed] Demo credentials:');
