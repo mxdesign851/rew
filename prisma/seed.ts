@@ -15,14 +15,13 @@ async function main() {
   await prisma.workspace.deleteMany();
   await prisma.user.deleteMany();
 
-  const ownerPassword = await bcrypt.hash('password123', 10);
-  const memberPassword = await bcrypt.hash('password123', 10);
+  const defaultPasswordHash = await bcrypt.hash('password123', 10);
 
   const owner = await prisma.user.create({
     data: {
       email: 'owner@example.com',
       name: 'Demo Owner',
-      hashedPassword: ownerPassword
+      hashedPassword: defaultPasswordHash
     }
   });
 
@@ -30,7 +29,32 @@ async function main() {
     data: {
       email: 'member@example.com',
       name: 'Demo Member',
-      hashedPassword: memberPassword
+      hashedPassword: defaultPasswordHash
+    }
+  });
+
+  const superAdmin = await prisma.user.create({
+    data: {
+      email: 'superadmin@reply-zen.com',
+      name: 'Super Admin',
+      hashedPassword: defaultPasswordHash,
+      isSuperAdmin: true
+    }
+  });
+
+  const premiumOwner = await prisma.user.create({
+    data: {
+      email: 'premium@reply-zen.com',
+      name: 'Premium Demo Owner',
+      hashedPassword: defaultPasswordHash
+    }
+  });
+
+  const premiumMember = await prisma.user.create({
+    data: {
+      email: 'premium-member@reply-zen.com',
+      name: 'Premium Demo Member',
+      hashedPassword: defaultPasswordHash
     }
   });
 
@@ -85,6 +109,62 @@ async function main() {
       externalId: 'sub_demo_123',
       currentPeriodEnd: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
       metadata: { customerId: 'cus_demo_123' }
+    }
+  });
+
+  const premiumWorkspace = await prisma.workspace.create({
+    data: {
+      name: 'ReviewPilot Premium Demo',
+      plan: Plan.AGENCY,
+      monthBucket: `${new Date().getUTCFullYear()}-${String(new Date().getUTCMonth() + 1).padStart(2, '0')}`,
+      aiGenerationsUsed: 384,
+      memberships: {
+        create: [
+          { userId: premiumOwner.id, role: Role.OWNER },
+          { userId: premiumMember.id, role: Role.MEMBER },
+          { userId: superAdmin.id, role: Role.ADMIN }
+        ]
+      },
+      locations: {
+        create: [
+          { name: 'Central City Hub', timezone: 'Europe/Bucharest' },
+          { name: 'North Retail Point', timezone: 'Europe/Bucharest' },
+          { name: 'West Flagship', timezone: 'Europe/Bucharest' }
+        ]
+      },
+      brandVoice: {
+        create: {
+          tone: 'PROFESSIONAL',
+          doList: ['Open with appreciation', 'Address issue directly', 'Offer a practical next step'],
+          dontList: ['Do not blame customer', 'Do not overpromise'],
+          examples: ['Thanks for the detailed review - we appreciate your feedback.'],
+          bannedWords: ['cheap', 'fault', 'impossible'],
+          signOff: '- ReviewPilot Premium Team'
+        }
+      },
+      sources: {
+        createMany: {
+          data: [
+            { provider: ReviewSource.GOOGLE, displayName: 'Google Reviews', status: 'MANUAL' },
+            { provider: ReviewSource.FACEBOOK, displayName: 'Facebook Reviews', status: 'MANUAL' },
+            { provider: ReviewSource.YELP, displayName: 'Yelp Reviews', status: 'MANUAL' },
+            { provider: ReviewSource.TRUSTPILOT, displayName: 'Trustpilot Reviews', status: 'MANUAL' }
+          ]
+        }
+      }
+    },
+    include: { locations: true }
+  });
+
+  await prisma.subscription.create({
+    data: {
+      workspaceId: premiumWorkspace.id,
+      provider: 'PAYPAL',
+      status: 'ACTIVE',
+      plan: 'AGENCY',
+      externalId: 'sub_premium_demo_456',
+      currentPeriodEnd: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
+      metadata: { planId: 'agency-demo-plan' }
     }
   });
 
@@ -165,9 +245,89 @@ async function main() {
     ]
   });
 
+  const [premiumLocationA, premiumLocationB] = premiumWorkspace.locations;
+  const premiumReview = await prisma.review.create({
+    data: {
+      workspaceId: premiumWorkspace.id,
+      locationId: premiumLocationA.id,
+      source: ReviewSource.TRUSTPILOT,
+      authorName: 'Cristina V.',
+      rating: 1,
+      text: 'Delivery was late twice and support did not answer quickly enough.',
+      reviewDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      sentiment: Sentiment.NEG,
+      tags: ['delivery-delay', 'support-response'],
+      status: 'APPROVED',
+      replyDraft:
+        'Thank you for this feedback. We are sorry for the repeated delays and the slow response. Please contact our premium support line so we can resolve this immediately.',
+      approvedReply:
+        'Thank you for this feedback. We are sorry for the repeated delays and the slow response. Please contact our premium support line so we can resolve this immediately.',
+      draftedById: premiumMember.id,
+      draftedAt: new Date(Date.now() - 16 * 60 * 60 * 1000),
+      approvedById: premiumOwner.id,
+      approvedAt: new Date(Date.now() - 12 * 60 * 60 * 1000)
+    }
+  });
+
+  await prisma.review.create({
+    data: {
+      workspaceId: premiumWorkspace.id,
+      locationId: premiumLocationB.id,
+      source: ReviewSource.GOOGLE,
+      authorName: 'Mihai N.',
+      rating: 5,
+      text: 'Amazing onboarding and very friendly team. We got help instantly.',
+      reviewDate: new Date(Date.now() - 8 * 60 * 60 * 1000),
+      sentiment: Sentiment.POS,
+      tags: ['onboarding', 'team-support'],
+      status: 'DRAFTED',
+      replyDraft: 'Thank you so much for the kind words. We are glad onboarding felt smooth and helpful.',
+      draftedById: premiumMember.id,
+      draftedAt: new Date(Date.now() - 6 * 60 * 60 * 1000)
+    }
+  });
+
+  await prisma.replyGeneration.create({
+    data: {
+      workspaceId: premiumWorkspace.id,
+      reviewId: premiumReview.id,
+      createdById: premiumMember.id,
+      provider: 'OPENAI',
+      model: 'gpt-4o-mini',
+      promptVersion: 'v1.0.0',
+      length: 'medium',
+      escalation: true,
+      inputTokens: 422,
+      outputTokens: 158,
+      estimatedCostUsd: 0.000158,
+      replyText: premiumReview.approvedReply || ''
+    }
+  });
+
+  await prisma.reviewAuditLog.createMany({
+    data: [
+      {
+        workspaceId: premiumWorkspace.id,
+        reviewId: premiumReview.id,
+        actorId: premiumMember.id,
+        action: 'REVIEW_DRAFTED',
+        metadata: { provider: 'openai', workspaceType: 'premium-demo' }
+      },
+      {
+        workspaceId: premiumWorkspace.id,
+        reviewId: premiumReview.id,
+        actorId: premiumOwner.id,
+        action: 'REVIEW_APPROVED',
+        metadata: { statusFrom: 'DRAFTED', statusTo: 'APPROVED' }
+      }
+    ]
+  });
+
   // Demo credentials:
   // owner@example.com / password123
   // member@example.com / password123
+  // superadmin@reply-zen.com / password123
+  // premium@reply-zen.com / password123
   // Sign in and visit /app
   // Then open the seeded workspace dashboard.
 }
