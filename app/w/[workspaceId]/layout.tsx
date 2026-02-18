@@ -23,6 +23,8 @@ export default async function WorkspaceLayout({ children, params }: LayoutProps)
 
   const navItems = [
     { href: `/w/${params.workspaceId}/inbox`, label: 'Inbox' },
+    { href: `/w/${params.workspaceId}/medicamente`, label: 'Medicamente' },
+    { href: `/w/${params.workspaceId}/profil-psihosocial`, label: 'Profil psihosocial' },
     { href: `/w/${params.workspaceId}/analytics`, label: 'Analytics' },
     { href: `/w/${params.workspaceId}/brand-voice`, label: 'Brand Voice' },
     { href: `/w/${params.workspaceId}/locations`, label: 'Locations' },

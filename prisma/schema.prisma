@@ -70,6 +70,68 @@ enum SubscriptionStatus {
   UNPAID
 }
 
+enum MedicationCategory {
+  CARDIO
+  DIABET
+  GASTRO
+  RESPIRATOR
+  NEURO
+  PSIHIATRIC
+  ANTIBIOTICE
+  DURERE
+  ALERGII
+  DERMATO
+  VITAMINE
+  ALTELE
+}
+
+enum FamilySupportLevel {
+  DA
+  NU
+  PARTIAL
+}
+
+enum HousingStatus {
+  FARA_ADAPOST
+  CENTRU
+  FAMILIE
+  ALTA
+}
+
+enum CommunicationLevel {
+  MIC
+  MEDIU
+  BUN
+}
+
+enum StressReaction {
+  CALM
+  AGITAT
+  CRIZE
+}
+
+enum RelationshipStyle {
+  RETRAS
+  SOCIABIL
+  AGRESIV
+}
+
+enum AutonomyLevel {
+  DEPENDENT
+  PARTIAL
+  INDEPENDENT
+}
+
+enum SleepQuality {
+  BUN
+  SLAB
+}
+
+enum AppetiteLevel {
+  NORMAL
+  SCAZUT
+}
+
 enum AuditAction {
   REVIEW_IMPORTED
   REVIEW_CREATED
@@ -99,6 +161,8 @@ model User {
   editedReviews   Review[]              @relation("EditedBy")
   generations     ReplyGeneration[]
   auditLogs       ReviewAuditLog[]
+  medicationPurchases MedicationPurchase[]
+  psychosocialProfiles PsychosocialProfile[] @relation("PsychosocialCreatedBy")
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @updatedAt
 }
@@ -119,6 +183,10 @@ model Workspace {
   generations       ReplyGeneration[]
   auditLogs         ReviewAuditLog[]
   subscription      Subscription?
+  medicationItems   MedicationItem[]
+  medicationNotificationPreference MedicationNotificationPreference?
+  medicationPurchases MedicationPurchase[]
+  psychosocialProfiles PsychosocialProfile[]
   createdAt         DateTime              @default(now())
   updatedAt         DateTime              @updatedAt
 }
@@ -275,4 +343,108 @@ model SourceConnection {
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, provider])
+}
+
+model MedicationItem {
+  id                String             @id @default(cuid())
+  workspaceId       String
+  name              String
+  category          MedicationCategory
+  shelf             String?
+  stockQuantity     Decimal            @default(0) @db.Decimal(10, 2)
+  minStockThreshold Decimal            @default(1) @db.Decimal(10, 2)
+  unit              String             @default("cutii")
+  dailyUsage        Decimal?           @db.Decimal(10, 2)
+  lastUnitPrice     Decimal?           @db.Decimal(10, 2)
+  lastPurchaseAt    DateTime?
+  expiresAt         DateTime?
+  notes             String?
+  notifyOnLowStock  Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  workspace         Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  purchases         MedicationPurchase[]
+
+  @@index([workspaceId, category])
+  @@index([workspaceId, stockQuantity])
+  @@index([workspaceId, expiresAt])
+}
+
+model MedicationPurchase {
+  id          String         @id @default(cuid())
+  workspaceId String
+  itemId      String
+  quantity    Decimal        @db.Decimal(10, 2)
+  unitPrice   Decimal?       @db.Decimal(10, 2)
+  purchasedAt DateTime       @default(now())
+  supplier    String?
+  createdById String?
+  createdAt   DateTime       @default(now())
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  item        MedicationItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdBy   User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, purchasedAt])
+  @@index([itemId, purchasedAt])
+}
+
+model MedicationNotificationPreference {
+  id                  String    @id @default(cuid())
+  workspaceId         String    @unique
+  phoneNumber         String?
+  enablePhoneAlerts   Boolean   @default(false)
+  enableLowStockAlerts Boolean  @default(true)
+  enableExpiryAlerts  Boolean   @default(true)
+  expiryAlertDays     Int       @default(30)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  workspace           Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model PsychosocialProfile {
+  id                        String             @id @default(cuid())
+  workspaceId               String
+  createdById               String?
+  internalName              String
+  age                       Int
+  sex                       String
+  locationCenter            String
+  assessmentDate            DateTime
+  responsiblePerson         String
+  familySupport             FamilySupportLevel
+  housingStatus             HousingStatus
+  familyContactFrequency    String?
+  institutionalizationHistory String?
+  knownDiseases             Boolean?
+  medicationInfo            String?
+  limitations               String?
+  previousPsychEvaluation   Boolean?
+  communicationLevel        CommunicationLevel
+  stressReaction            StressReaction
+  relationshipStyle         RelationshipStyle
+  autonomyLevel             AutonomyLevel
+  sleepQuality              SleepQuality
+  appetite                  AppetiteLevel
+  sadnessFrequent           Boolean            @default(false)
+  anxiety                   Boolean            @default(false)
+  anger                     Boolean            @default(false)
+  apathy                    Boolean            @default(false)
+  hopeMotivation            Boolean            @default(false)
+  photoConsent              Boolean            @default(false)
+  photoReference            String?
+  contextPersonal           String
+  emotionalProfile          String
+  mainNeeds                 String[]           @default([])
+  risks                     String[]           @default([])
+  staffRecommendations      String[]           @default([])
+  supportPlan               String[]           @default([])
+  observations              String?
+  signatureResponsible      String?
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  workspace                 Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy                 User?              @relation("PsychosocialCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, assessmentDate])
+  @@index([workspaceId, createdAt])
 }
