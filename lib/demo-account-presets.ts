@@ -43,6 +43,19 @@ export const DEMO_ACCOUNT_PRESETS: DemoAccountPreset[] = [
       name: 'ReplyZen Premium Demo',
       plan: 'AGENCY'
     }
+  },
+  {
+    label: 'Standard Owner',
+    email: 'owner@example.com',
+    badge: 'PRO PLAN',
+    userName: 'Demo Owner',
+    isSuperAdmin: false,
+    role: 'OWNER',
+    workspace: {
+      slug: 'replyzen-demo-pro',
+      name: 'ReplyZen Demo Workspace',
+      plan: 'PRO'
+    }
   }
 ];
 

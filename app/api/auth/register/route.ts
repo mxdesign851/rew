@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { HttpError, jsonError } from '@/lib/http';
 import { sanitizeEmail, sanitizeText } from '@/lib/sanitize';
+import { withPrismaRuntimeBootstrap } from '@/lib/prisma-runtime-bootstrap';
 
 const schema = z.object({
   email: z.string().email(),
@@ -17,18 +18,25 @@ export async function POST(request: Request) {
     const parsed = schema.parse(body);
 
     const email = sanitizeEmail(parsed.email);
-    const existing = await prisma.user.findUnique({ where: { email } });
+    const existing = await withPrismaRuntimeBootstrap(
+      () => prisma.user.findUnique({ where: { email } }),
+      'register-user-find'
+    );
     if (existing) throw new HttpError(409, 'Email already registered');
 
     const hashedPassword = await bcrypt.hash(parsed.password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email,
-        hashedPassword,
-        name: parsed.name ? sanitizeText(parsed.name, 100) : null
-      },
-      select: { id: true, email: true, name: true, createdAt: true }
-    });
+    const user = await withPrismaRuntimeBootstrap(
+      () =>
+        prisma.user.create({
+          data: {
+            email,
+            hashedPassword,
+            name: parsed.name ? sanitizeText(parsed.name, 100) : null
+          },
+          select: { id: true, email: true, name: true, createdAt: true }
+        }),
+      'register-user-create'
+    );
 
     return NextResponse.json(user, { status: 201 });
   } catch (error) {

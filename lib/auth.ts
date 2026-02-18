@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { sanitizeEmail } from '@/lib/sanitize';
 import { ensureNextAuthPublicUrl } from '@/lib/public-url';
 import { ensureDemoAccountForCredentials } from '@/lib/demo-accounts';
+import { withPrismaRuntimeBootstrap } from '@/lib/prisma-runtime-bootstrap';
 
 const fallbackSecret = 'replyzen-temporary-secret-change-me';
 if (!process.env.NEXTAUTH_SECRET) {
@@ -36,7 +37,10 @@ export const authOptions: AuthOptions = {
         try {
           const normalizedEmail = sanitizeEmail(credentials.email);
           await ensureDemoAccountForCredentials(normalizedEmail, credentials.password);
-          const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+          const user = await withPrismaRuntimeBootstrap(
+            () => prisma.user.findUnique({ where: { email: normalizedEmail } }),
+            'auth-user-find'
+          );
           if (!user?.hashedPassword) return null;
           const isValid = await bcrypt.compare(credentials.password, user.hashedPassword);
           if (!isValid) return null;
