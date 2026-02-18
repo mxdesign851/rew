@@ -1,0 +1,28 @@
+<svg width="1200" height="780" viewBox="0 0 1200 780" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="780" rx="28" fill="#0B1326"/>
+  <rect x="36" y="36" width="1128" height="708" rx="16" fill="#121E36"/>
+  <rect x="68" y="68" width="250" height="110" rx="12" fill="#1A2D4E"/>
+  <rect x="350" y="68" width="250" height="110" rx="12" fill="#1A2D4E"/>
+  <rect x="632" y="68" width="250" height="110" rx="12" fill="#1A2D4E"/>
+  <rect x="914" y="68" width="218" height="110" rx="12" fill="#1A2D4E"/>
+  <rect x="96" y="108" width="80" height="20" rx="10" fill="#7DA6FF"/>
+  <rect x="378" y="108" width="80" height="20" rx="10" fill="#84DCC6"/>
+  <rect x="660" y="108" width="80" height="20" rx="10" fill="#FACC15"/>
+  <rect x="940" y="108" width="80" height="20" rx="10" fill="#FB7185"/>
+  <rect x="68" y="210" width="670" height="250" rx="14" fill="#172844"/>
+  <rect x="766" y="210" width="366" height="250" rx="14" fill="#172844"/>
+  <polyline points="96,404 196,350 296,360 396,290 496,300 596,250 696,230" stroke="#77A0FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="196" cy="350" r="8" fill="#77A0FF"/>
+  <circle cx="396" cy="290" r="8" fill="#77A0FF"/>
+  <circle cx="596" cy="250" r="8" fill="#77A0FF"/>
+  <rect x="800" y="248" width="300" height="18" rx="9" fill="#315281"/>
+  <rect x="800" y="284" width="260" height="18" rx="9" fill="#315281"/>
+  <rect x="800" y="320" width="220" height="18" rx="9" fill="#315281"/>
+  <rect x="800" y="356" width="280" height="18" rx="9" fill="#315281"/>
+  <rect x="800" y="392" width="240" height="18" rx="9" fill="#315281"/>
+  <rect x="68" y="492" width="1064" height="220" rx="14" fill="#172844"/>
+  <rect x="100" y="536" width="300" height="20" rx="10" fill="#84DCC6"/>
+  <rect x="100" y="576" width="920" height="16" rx="8" fill="#315281"/>
+  <rect x="100" y="604" width="760" height="16" rx="8" fill="#315281"/>
+  <rect x="100" y="632" width="500" height="16" rx="8" fill="#315281"/>
+</svg>
