@@ -35,34 +35,38 @@ export function SignInForm({ callbackUrl = '/app', demoAccounts = [], initialErr
   const inputClassName =
     'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-100';
 
+  const attemptSignIn = async (inputEmail: string, inputPassword: string) => {
+    try {
+      const result = await signIn('credentials', {
+        email: inputEmail,
+        password: inputPassword,
+        redirect: false
+      });
+
+      if (result?.error) {
+        setError(mapClientSignInError(result.error));
+        return;
+      }
+
+      if (!result?.ok) {
+        setError('Sign in failed. Please try again.');
+        return;
+      }
+
+      router.push(callbackUrl);
+      router.refresh();
+    } catch (submitError) {
+      console.error('[sign-in] Sign in request failed', submitError);
+      setError('Sign in failed due to a network issue. Please retry.');
+    }
+  };
+
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     setError(null);
     setInfo(null);
     startTransition(async () => {
-      try {
-        const result = await signIn('credentials', {
-          email,
-          password,
-          redirect: false
-        });
-
-        if (result?.error) {
-          setError(mapClientSignInError(result.error));
-          return;
-        }
-
-        if (!result?.ok) {
-          setError('Sign in failed. Please try again.');
-          return;
-        }
-
-        router.push(callbackUrl);
-        router.refresh();
-      } catch (submitError) {
-        console.error('[sign-in] Sign in request failed', submitError);
-        setError('Sign in failed due to a network issue. Please retry.');
-      }
+      await attemptSignIn(email, password);
     });
   };
 
@@ -70,17 +74,22 @@ export function SignInForm({ callbackUrl = '/app', demoAccounts = [], initialErr
     <form onSubmit={onSubmit} className="space-y-4">
       {demoAccounts.length ? (
         <div className="space-y-2 rounded-xl border border-slate-200 bg-slate-50/90 p-3 dark:border-slate-700 dark:bg-slate-900/60">
-          <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Quick demo sign in</p>
+          <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Quick demo access</p>
           <div className="grid gap-2">
             {demoAccounts.map((account) => (
               <button
                 key={account.email}
                 type="button"
-                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs hover:border-blue-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900/70 dark:hover:border-blue-500/40 dark:hover:bg-slate-800"
+                disabled={pending}
+                className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-xs hover:border-blue-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900/70 dark:hover:border-blue-500/40 dark:hover:bg-slate-800"
                 onClick={() => {
+                  setError(null);
                   setEmail(account.email);
                   setPassword(account.password);
-                  setInfo(`Loaded ${account.label} credentials.`);
+                  setInfo(`Signing in as ${account.label}...`);
+                  startTransition(async () => {
+                    await attemptSignIn(account.email, account.password);
+                  });
                 }}
               >
                 <span>

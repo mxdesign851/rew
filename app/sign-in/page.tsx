@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SignInForm } from '@/components/auth/sign-in-form';
+import { PUBLIC_DEMO_ACCOUNTS } from '@/lib/demo-account-presets';
 
 function mapAuthError(error?: string) {
   if (!error) return null;
@@ -24,26 +25,7 @@ export default function SignInPage({
 }: {
   searchParams?: { callbackUrl?: string; error?: string };
 }) {
-  const demoAccounts = [
-    {
-      label: 'Super Admin',
-      email: 'superadmin@reply-zen.com',
-      password: 'password123',
-      badge: 'GLOBAL ADMIN'
-    },
-    {
-      label: 'Premium Demo Owner',
-      email: 'premium@reply-zen.com',
-      password: 'password123',
-      badge: 'AGENCY PLAN'
-    },
-    {
-      label: 'Standard Owner',
-      email: 'owner@example.com',
-      password: 'password123',
-      badge: 'PRO PLAN'
-    }
-  ];
+  const demoAccounts = PUBLIC_DEMO_ACCOUNTS;
   const authError = mapAuthError(searchParams?.error);
 
   return (
