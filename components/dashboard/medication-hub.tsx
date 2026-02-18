@@ -73,6 +73,8 @@ const CATEGORY_OPTIONS = [
   { value: 'ALTELE', label: 'Altele' }
 ] as const;
 
+type MedicationCategoryValue = (typeof CATEGORY_OPTIONS)[number]['value'];
+
 function formatDate(value: string | null) {
   if (!value) return '-';
   return new Date(value).toLocaleDateString('ro-RO');
@@ -125,7 +127,19 @@ export function MedicationHub({
     expiryAlertDays: initialPreference.expiryAlertDays
   });
 
-  const [addForm, setAddForm] = useState({
+  const [addForm, setAddForm] = useState<{
+    name: string;
+    category: MedicationCategoryValue;
+    shelf: string;
+    stockQuantity: string;
+    minStockThreshold: string;
+    unit: string;
+    dailyUsage: string;
+    lastUnitPrice: string;
+    expiresAt: string;
+    notes: string;
+    notifyOnLowStock: boolean;
+  }>({
     name: '',
     category: CATEGORY_OPTIONS[0]?.value ?? 'CARDIO',
     shelf: '',
@@ -538,7 +552,11 @@ export function MedicationHub({
                 onChange={(event) => setAddForm((prev) => ({ ...prev, name: event.target.value }))}
               />
               <div className="grid gap-3 sm:grid-cols-2">
-                <select className="input" value={addForm.category} onChange={(event) => setAddForm((prev) => ({ ...prev, category: event.target.value }))}>
+                <select
+                  className="input"
+                  value={addForm.category}
+                  onChange={(event) => setAddForm((prev) => ({ ...prev, category: event.target.value as MedicationCategoryValue }))}
+                >
                   {CATEGORY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
