@@ -36,7 +36,7 @@ export default function BlogIndexPage() {
             <div className="mt-4 flex items-center justify-between">
               <span className="text-xs text-slate-500">{post.publishedAt}</span>
               <Link href={`/blog/${post.slug}`} className="text-sm font-medium text-blue-300">
-                Read article ->
+                Read article {'->'}
               </Link>
             </div>
           </article>
