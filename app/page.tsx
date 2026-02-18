@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
+import { NewsletterForm } from '@/components/marketing/newsletter-form';
+import { BLOG_POSTS } from '@/lib/marketing';
 
 export default function LandingPage() {
   const pricing = [
@@ -25,28 +27,28 @@ export default function LandingPage() {
 
   const featureBlocks = [
     {
-      title: 'Inbox AI-first',
-      description: 'Filter by status, rating, sentiment, source, tags, and date in one workspace-aware flow.'
+      title: 'Unified inbox and filters',
+      description: 'Filter instantly by status, rating, sentiment, source, tags, and date in one workspace-aware flow.'
     },
     {
-      title: 'Brand voice controls',
-      description: 'Set tone, do and do-not rules, banned words, and sign-off defaults per workspace or location.'
+      title: 'AI generation controls',
+      description: 'Choose provider, length, language, and escalation rules for high quality response drafts.'
     },
     {
-      title: 'Approval workflow',
-      description: 'Members draft, Admin and Owner approve, with a full audit trail for every change.'
+      title: 'Brand voice system',
+      description: 'Apply tone, examples, do and do-not lists, and banned terms at workspace and location level.'
     },
     {
-      title: 'Plan enforcement',
-      description: 'Free, Pro, Agency limits are validated server-side for workspaces, locations, and AI usage.'
+      title: 'Approval and compliance',
+      description: 'Members draft, Admin and Owner approve, with full audit logs for every change.'
     },
     {
-      title: 'Billing ready',
-      description: 'Stripe and PayPal subscription flows with webhook status sync and downgrade grace periods.'
+      title: 'Analytics and exports',
+      description: 'Monitor rating trends, sentiment breakdown, top tags, and export CSV reply packs.'
     },
     {
-      title: 'Exports + analytics',
-      description: 'Track rating trends, sentiment, top tags, and export selected replies as CSV when needed.'
+      title: 'Billing and plan governance',
+      description: 'Stripe and PayPal subscriptions with webhook sync, grace periods, and server-side limit enforcement.'
     }
   ];
 
@@ -72,6 +74,20 @@ export default function LandingPage() {
     <main className="min-h-screen">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
         <Logo />
+        <nav className="hidden items-center gap-5 text-sm text-slate-300 md:flex">
+          <Link href="#features" className="hover:text-white">
+            Features
+          </Link>
+          <Link href="#pricing" className="hover:text-white">
+            Pricing
+          </Link>
+          <Link href="#testimonials" className="hover:text-white">
+            Testimonials
+          </Link>
+          <Link href="#blog" className="hover:text-white">
+            Blog
+          </Link>
+        </nav>
         <div className="flex items-center gap-3">
           <Link href="/sign-in" className="btn btn-secondary">
             Sign in
@@ -85,29 +101,29 @@ export default function LandingPage() {
       <section className="mx-auto grid w-full max-w-6xl gap-10 px-6 pb-12 pt-8 md:grid-cols-[1.2fr_1fr]">
         <div className="space-y-6">
           <span className="badge border-blue-500/40 bg-blue-500/10 text-blue-200">
-            Multi-tenant AI review operations
+            Built for agencies and multi-location SaaS operators
           </span>
           <h1 className="text-4xl font-bold leading-tight md:text-6xl">
-            Reply faster. Stay on-brand. Win trust at scale.
+            The AI Review Reply Manager that turns customer feedback into growth.
           </h1>
           <p className="max-w-2xl text-lg text-slate-300">
-            ReviewPilot helps SaaS teams, local businesses, and agencies transform customer reviews into high-quality responses
-            with AI generation, approvals, sentiment intelligence, and plan-aware operations.
+            ReviewPilot helps teams draft better replies in seconds, enforce approval quality, and prove outcomes with analytics.
+            One platform for inbox operations, brand consistency, exports, and subscriptions.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/sign-up" className="btn btn-primary">
-              Start free on reply-zen.com
+              Create free workspace
             </Link>
             <Link href="/app" className="btn btn-secondary">
-              Open app demo
+              Open live demo
             </Link>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             {[
-              ['+64%', 'faster first draft turnaround'],
+              ['+64%', 'faster draft turnaround'],
               ['12,000+', 'monthly replies generated'],
-              ['99.9%', 'workspace authorization coverage']
+              ['92%', 'approval SLA hit rate']
             ].map(([metric, description]) => (
               <div key={metric} className="card p-4">
                 <p className="text-2xl font-semibold">{metric}</p>
@@ -118,7 +134,7 @@ export default function LandingPage() {
         </div>
         <div className="card overflow-hidden bg-slate-950/60">
           <div className="flex items-center justify-between border-b border-slate-800 p-4">
-            <p className="text-sm text-slate-400">Live generation terminal</p>
+            <p className="text-sm text-slate-400">Live workflow terminal</p>
             <span className="badge border-emerald-500/30 bg-emerald-500/10 text-emerald-200">Connected</span>
           </div>
           <div className="space-y-3 p-4 font-mono text-xs text-slate-300">
@@ -142,8 +158,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-10">
-        <h2 className="text-2xl font-semibold md:text-3xl">Everything needed for review operations</h2>
+      <section className="mx-auto w-full max-w-6xl px-6 py-2">
+        <div className="card p-4">
+          <p className="text-center text-xs uppercase tracking-[0.14em] text-slate-400">
+            Trusted workflow model: Manual imports first, API connectors next
+          </p>
+        </div>
+      </section>
+
+      <section id="features" className="mx-auto w-full max-w-6xl px-6 py-10">
+        <h2 className="text-2xl font-semibold md:text-3xl">Sales-ready feature set, not a toy dashboard</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {featureBlocks.map((feature) => (
             <article key={feature.title} className="card p-5">
@@ -156,12 +180,12 @@ export default function LandingPage() {
 
       <section className="mx-auto w-full max-w-6xl px-6 py-4">
         <div className="card p-6">
-          <h2 className="text-2xl font-semibold">How it works in 3 steps</h2>
+          <h2 className="text-2xl font-semibold">How teams win with ReviewPilot in 3 steps</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {[
-              ['1. Import reviews', 'Add manual entries or upload CSV with source, rating, text, and location.'],
-              ['2. Generate + edit', 'Use AI drafts with brand voice, then refine reply text and tags.'],
-              ['3. Approve + export', 'Approve internally and export packs for publishing or client delivery.']
+              ['1. Import', 'Add reviews manually or upload CSV by source and location in minutes.'],
+              ['2. Draft and approve', 'Generate AI replies, edit with brand voice guardrails, then approve.'],
+              ['3. Publish and report', 'Export responses and show clients analytics progress each week.']
             ].map(([title, desc]) => (
               <div key={title} className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
                 <p className="font-semibold">{title}</p>
@@ -172,8 +196,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-10">
-        <h2 className="text-2xl font-semibold md:text-3xl">Simple pricing for operators and agencies</h2>
+      <section id="pricing" className="mx-auto w-full max-w-6xl px-6 py-10">
+        <h2 className="text-2xl font-semibold md:text-3xl">Packages built to convert and scale</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {pricing.map((plan) => (
             <article
@@ -206,8 +230,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-4">
-        <h2 className="text-2xl font-semibold md:text-3xl">Teams love the speed and consistency</h2>
+      <section id="testimonials" className="mx-auto w-full max-w-6xl px-6 py-4">
+        <h2 className="text-2xl font-semibold md:text-3xl">Testimonials from operators and founders</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {testimonials.map((item) => (
             <article key={item.name} className="card p-5">
@@ -219,15 +243,100 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-slate-800 px-6 py-6 text-sm text-slate-400">
-        <p>(c) {new Date().getFullYear()} ReviewPilot (ReplyZen)</p>
-        <div className="flex items-center gap-4">
-          <Link href="/privacy" className="hover:text-slate-200">
-            Privacy
+      <section id="blog" className="mx-auto w-full max-w-6xl px-6 py-10">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <h2 className="text-2xl font-semibold md:text-3xl">Latest blog insights</h2>
+            <p className="mt-1 text-sm text-slate-400">Playbooks for AI review operations, agency workflows, and growth metrics.</p>
+          </div>
+          <Link href="/blog" className="btn btn-secondary">
+            View all posts
           </Link>
-          <Link href="/terms" className="hover:text-slate-200">
-            Terms
-          </Link>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {BLOG_POSTS.map((post) => (
+            <article key={post.slug} className="card p-5">
+              <div className="flex items-center justify-between">
+                <span className="badge">{post.category}</span>
+                <span className="text-xs text-slate-400">{post.readTime}</span>
+              </div>
+              <h3 className="mt-4 text-lg font-semibold">{post.title}</h3>
+              <p className="mt-2 text-sm text-slate-400">{post.excerpt}</p>
+              <div className="mt-4">
+                <Link href={`/blog/${post.slug}`} className="text-sm font-medium text-blue-300">
+                  Read article {'->'}
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-4">
+        <div className="card p-6">
+          <h2 className="text-2xl font-semibold">Get growth tactics every week</h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+            Join the ReviewPilot newsletter for new conversion playbooks, review response templates, and AI workflow
+            optimization ideas.
+          </p>
+          <div className="mt-4">
+            <NewsletterForm />
+          </div>
+        </div>
+      </section>
+
+      <footer className="mx-auto mt-10 w-full max-w-6xl border-t border-slate-800 px-6 py-8 text-sm text-slate-400">
+        <div className="grid gap-8 md:grid-cols-5">
+          <div className="md:col-span-2">
+            <Logo />
+            <p className="mt-3 max-w-sm text-slate-400">
+              ReviewPilot by ReplyZen helps teams transform customer reviews into consistent, on-brand replies that increase
+              trust and retention.
+            </p>
+            <p className="mt-3 text-xs text-slate-500">Support: hello@reply-zen.com</p>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-200">Product</p>
+            <div className="mt-2 grid gap-2">
+              <Link href="#features" className="hover:text-white">
+                Features
+              </Link>
+              <Link href="#pricing" className="hover:text-white">
+                Pricing
+              </Link>
+              <Link href="/sign-in" className="hover:text-white">
+                Sign in
+              </Link>
+            </div>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-200">Resources</p>
+            <div className="mt-2 grid gap-2">
+              <Link href="/blog" className="hover:text-white">
+                Blog
+              </Link>
+              <Link href="/sample-reviews.csv" className="hover:text-white">
+                CSV template
+              </Link>
+              <Link href="/http-examples.http" className="hover:text-white">
+                API examples
+              </Link>
+            </div>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-200">Legal</p>
+            <div className="mt-2 grid gap-2">
+              <Link href="/privacy" className="hover:text-white">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white">
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 border-t border-slate-800 pt-4 text-xs text-slate-500">
+          (c) {new Date().getFullYear()} ReviewPilot (ReplyZen). Built for modern review operations.
         </div>
       </footer>
     </main>
